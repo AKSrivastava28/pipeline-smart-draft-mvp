@@ -2,16 +2,15 @@
 
 import { useState } from 'react';
 import { mockSignalData } from '../data/mockData';
-import { Sparkles, Clock, Check, Send, ShieldAlert, ArrowLeftRight, FileText } from 'lucide-react';
 
 export default function SmartDraftDashboard() {
-  const [currentVersion, setCurrentVersion] = useState<string>('default');
-  const [emailText, setEmailText] = useState<string>(mockSignalData.emailVariations.default);
-  const [showNotification, setShowNotification] = useState<boolean>(false);
+  const [currentVersion, setCurrentVersion] = useState('default');
+  const [emailText, setEmailText] = useState(mockSignalData.emailVariations.default);
+  const [showNotification, setShowNotification] = useState(false);
 
-  const handleVersionChange = (versionKey: string) => {
+  const handleVersionChange = (versionKey: 'default' | 'shorter' | 'casual' | 'metrics') => {
     setCurrentVersion(versionKey);
-    setEmailText(mockSignalData.emailVariations[versionKey as keyof typeof mockSignalData.emailVariations]);
+    setEmailText(mockSignalData.emailVariations[versionKey]);
   };
 
   const handleApproveAndSend = () => {
@@ -21,16 +20,18 @@ export default function SmartDraftDashboard() {
 
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans relative antialiased">
+      {/* SUCCESS NOTIFICATION POPUP */}
       {showNotification && (
         <div className="absolute top-6 right-6 bg-emerald-500 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-emerald-400 animate-bounce z-50">
-          <Check className="w-5 h-5 bg-white text-emerald-500 rounded-full p-0.5" />
+          <span className="bg-white text-emerald-500 rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold">✓</span>
           <span className="font-medium">Pipeline Verified: Draft Successfully Synced to CRM!</span>
         </div>
       )}
 
+      {/* TOP NAVIGATION BAR */}
       <nav className="border-b border-slate-800 bg-slate-900/50 backdrop-blur px-8 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="bg-indigo-600 p-2 rounded-lg text-white font-bold text-lg shadow-lg shadow-indigo-600/20">P</div>
+          <div className="bg-indigo-600 px-2.5 py-1 rounded-lg text-white font-bold text-lg shadow-lg">P</div>
           <span className="font-bold text-xl tracking-tight">Pipeline <span className="text-indigo-400 font-medium">AI</span></span>
         </div>
         <div className="flex items-center gap-4 text-sm text-slate-400">
@@ -41,21 +42,20 @@ export default function SmartDraftDashboard() {
         </div>
       </nav>
 
+      {/* MAIN LAYOUT WRAPPER */}
       <div className="flex-1 max-w-7xl w-full mx-auto p-8 flex flex-col gap-6">
+        {/* COMPONENT A: THE SIGNAL HEADER */}
         <header className="bg-gradient-to-r from-slate-900 to-indigo-950/40 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="bg-indigo-500/10 p-3 rounded-xl text-indigo-400 border border-indigo-500/20 mt-1">
-              <Sparkles className="w-6 h-6" />
-            </div>
+            <div className="bg-indigo-500/10 px-3 py-2 rounded-xl text-indigo-400 border border-indigo-500/20 text-xl">✨</div>
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <h1 className="text-2xl font-bold tracking-tight text-white">{mockSignalData.company}</h1>
-                <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider flex items-center gap-1">
+                <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider">
                   High Buying Intent
                 </span>
               </div>
-              <p className="text-slate-400 text-sm flex items-center gap-2">
-                <ShieldAlert className="w-4 h-4 text-amber-400" />
+              <p className="text-slate-400 text-sm">
                 <span className="text-slate-200 font-medium">Trigger Signal:</span> {mockSignalData.trigger}
               </p>
             </div>
@@ -66,17 +66,16 @@ export default function SmartDraftDashboard() {
           </div>
         </header>
 
+        {/* WORKSPACE PANELS CONTAINER */}
         <section className="flex-1 grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch min-h-[500px]">
+          {/* COMPONENT B: THE LEFT PANEL (DYNAMIC EMAIL BOX) */}
           <div className="lg:col-span-2 flex flex-col bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
             <div className="border-b border-slate-800 bg-slate-900/80 px-6 py-4 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-indigo-400" />
-                <span className="font-semibold text-sm text-slate-200">AI Contextual Draft Output</span>
-              </div>
+              <span className="font-semibold text-sm text-slate-200">📝 AI Contextual Draft Output</span>
               <span className="text-xs text-slate-500 italic">Fully editable workspace</span>
             </div>
             <textarea
-              className="flex-1 w-full bg-slate-950 p-6 text-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 resize-none font-mono text-sm leading-relaxed border-b border-slate-800"
+              className="flex-1 w-full bg-slate-950 p-6 text-slate-300 focus:outline-none focus:ring-1 focus:ring-indigo-500/50 resize-none font-mono text-sm leading-relaxed border-b border-slate-800 min-h-[350px]"
               value={emailText}
               onChange={(e) => setEmailText(e.target.value)}
             />
@@ -89,32 +88,62 @@ export default function SmartDraftDashboard() {
             </div>
           </div>
 
+          {/* COMPONENT C: THE RIGHT PANEL (THE QUICK-ACTION SIDEBAR) */}
           <aside className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between gap-6">
             <div className="flex flex-col gap-5">
               <div>
-                <h2 className="text-base font-semibold text-slate-200 flex items-center gap-2 mb-1">
-                  <ArrowLeftRight className="w-4 h-4 text-indigo-400" />
-                  Smart Draft Adjusters
-                </h2>
+                <h2 className="text-base font-semibold text-slate-200 mb-1">🔄 Smart Draft Adjusters</h2>
                 <p className="text-xs text-slate-400">One-click modifiers to dynamically retarget parameters.</p>
               </div>
 
               <div className="flex flex-col gap-3">
-                {['default', 'shorter', 'casual', 'metrics'].map((version) => (
-                  <button
-                    key={version}
-                    onClick={() => handleVersionChange(version)}
-                    className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-200 flex items-center justify-between ${
-                      currentVersion === version
-                        ? 'bg-indigo-600/10 border-indigo-500 text-indigo-300'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
-                    }`}
-                  >
-                    <span className="font-medium capitalize">{version === 'default' ? 'Original Blueprint' : version}</span>
-                    {version === 'shorter' && <Clock className="w-4 h-4" />}
-                    {version === 'metrics' && <span className="text-xs bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold">90%</span>}
-                  </button>
-                ))}
+                <button
+                  onClick={() => handleVersionChange('default')}
+                  className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-200 flex items-center justify-between ${
+                    currentVersion === 'default'
+                      ? 'bg-indigo-600/10 border-indigo-500 text-indigo-300'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  }`}
+                >
+                  <span className="font-medium">Original Blueprint</span>
+                  <span className="text-xs opacity-60">Standard</span>
+                </button>
+
+                <button
+                  onClick={() => handleVersionChange('shorter')}
+                  className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-200 flex items-center justify-between ${
+                    currentVersion === 'shorter'
+                      ? 'bg-indigo-600/10 border-indigo-500 text-indigo-300'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  }`}
+                >
+                  <span className="font-medium">Compress Length</span>
+                  <span className="text-xs opacity-70">🕒</span>
+                </button>
+
+                <button
+                  onClick={() => handleVersionChange('casual')}
+                  className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-200 flex items-center justify-between ${
+                    currentVersion === 'casual'
+                      ? 'bg-indigo-600/10 border-indigo-500 text-indigo-300'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  }`}
+                >
+                  <span className="font-medium">Casual Tone Overhaul</span>
+                  <span className="text-xs bg-slate-800 px-2 py-0.5 rounded border border-slate-700 text-slate-300 font-mono">Hey</span>
+                </button>
+
+                <button
+                  onClick={() => handleVersionChange('metrics')}
+                  className={`w-full text-left px-4 py-3 rounded-xl border text-sm transition-all duration-200 flex items-center justify-between ${
+                    currentVersion === 'metrics'
+                      ? 'bg-indigo-600/10 border-indigo-500 text-indigo-300'
+                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                  }`}
+                >
+                  <span className="font-medium">Inject Hard Metrics</span>
+                  <span className="text-xs bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded font-bold">90%</span>
+                </button>
               </div>
             </div>
 
@@ -122,8 +151,7 @@ export default function SmartDraftDashboard() {
               onClick={handleApproveAndSend}
               className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-4 rounded-xl transition-all shadow-xl flex items-center justify-center gap-2 text-sm border border-indigo-500/30"
             >
-              <Send className="w-4 h-4" />
-              Approve & Sync to CRM
+              <span>🚀</span> Approve & Sync to CRM
             </button>
           </aside>
         </section>
